@@ -1,9 +1,8 @@
-
-from flask import Flask, render_template
+from flask import Flask, render_template, request  # Added `request` import
 
 app = Flask(__name__)
 
-# 建立問答集 Store questions and answers in a simple list for demonstration purposes
+# 問答集 Store questions and answers in a simple dictionary for demonstration purposes
 questions_answers = {
     "蘋果": "apple",
     "apple": "蘋果",
@@ -39,7 +38,6 @@ questions_answers = {
     "sad": "難過"
 }
 
-
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -65,11 +63,12 @@ def club():
 def ask_question():
     if request.method == 'POST':
         q = request.form['question']
-        a = questions_answers[q]
+        
+        # Handling cases where the question is not in the dictionary
+        a = questions_answers.get(q, "抱歉，我不明白您的問題。")  # Default message if question not found
+
         return render_template('ask.html', question=q, answer=a)
     return render_template('ask.html', question="", answer="")
-
-
 
 @app.route('/electives')
 def electives():
